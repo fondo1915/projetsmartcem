@@ -1,0 +1,17 @@
+{
+  "app": { "name": "SMARTCEM", "tagline": "Ton moteur d'apprentissage intelligent pour le cycle moyen" },
+  "hero": {
+    "title": "Apprends, progresse, réussis ton BEM",
+    "subtitle": "Diagnostic, exercices adaptés et correction intelligente pour les élèves de 1AM à 4AM.",
+    "cta": "Commencer le diagnostic",
+    "secondary": "Découvrir les matières"
+  },
+  "features": {
+    "diagnostic": { "title": "Diagnostic", "desc": "Un bilan de départ pour connaître tes points forts et tes lacunes." },
+    "adaptive": { "title": "Parcours adapté", "desc": "Des activités choisies selon ton niveau de maîtrise." },
+    "correction": { "title": "Correction intelligente", "desc": "Des explications claires, étape par étape." },
+    "bem": { "title": "Préparation BEM", "desc": "Simulations chronométrées pour les élèves de 4AM." }
+  },
+  "cemo": { "greeting": "Salut ! Je suis CEMO, ton compagnon d'étude." },
+  "ui": { "theme": "Thème", "language": "Langue", "light": "Clair", "dark": "Sombre" }
+}

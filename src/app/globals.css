@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+/* Dark mode piloté par la classe .dark (next-themes) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Palette SMARTCEM */
+  --color-primary: #4f46e5;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #8b5cf6;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-fun: #ec4899;
+
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-foreground: #0f172a;
+  --color-muted: #64748b;
+  --color-border: #e2e8f0;
+
+  --radius-card: 24px;
+  --radius-btn: 16px;
+
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: var(--font-tajawal), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-soft: 0 10px 30px -12px rgb(15 23 42 / 0.15);
+}
+
+/* Variantes dark : couleurs plus lumineuses pour garder le contraste */
+.dark {
+  --color-primary: #818cf8;
+  --color-secondary: #a78bfa;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-fun: #f472b6;
+
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-foreground: #f1f5f9;
+  --color-muted: #94a3b8;
+  --color-border: #334155;
+  --shadow-soft: 0 10px 30px -12px rgb(0 0 0 / 0.5);
+}
+
+html { color-scheme: light; }
+html.dark { color-scheme: dark; }
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+/* Typographie arabe en RTL */
+[dir="rtl"] body { font-family: var(--font-arabic); }
+
+/* Accessibilité : respecter la préférence "réduire les animations" */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
