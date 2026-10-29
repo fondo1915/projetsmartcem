@@ -1,0 +1,22 @@
+-- Active RLS sans créer de politiques.
+-- Les règles d'accès par rôle seront ajoutées en Phase 4.
+
+ALTER TABLE public.ai_audit_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.answers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.apc_indicators ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.chapters ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.class_enrollments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.classes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.competencies ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.domains ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.error_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.exercises ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.parent_child_links ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.questions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.rubrics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.step_solutions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.student_knowledge_states ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.student_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.subjects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.submissions ENABLE ROW LEVEL SECURITY;
