@@ -2,17 +2,23 @@
 
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import Link from "next/link";
 
-export function HeroActions({ primary, secondary }: { primary: string; secondary: string }) {
+export function HeroActions({
+  primary,
+  secondary,
+  primaryHref,
+}: { primary: string; secondary: string; primaryHref: string }) {
   return (
     <div className="flex flex-wrap gap-3">
-      <motion.button
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.96 }}
-        className="rounded-btn bg-primary px-6 py-3.5 text-base font-extrabold text-primary-foreground shadow-soft"
-      >
-        {primary}
-      </motion.button>
+      <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.96 }}>
+        <Link
+          href={primaryHref}
+          className="block rounded-btn bg-primary px-6 py-3.5 text-base font-extrabold text-primary-foreground shadow-soft"
+        >
+          {primary}
+        </Link>
+      </motion.div>
       <motion.button
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.96 }}

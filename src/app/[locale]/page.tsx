@@ -37,7 +37,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <span className="w-fit rounded-full bg-primary/10 px-4 py-1.5 text-sm font-bold text-primary">{t.app.tagline}</span>
           <h1 className="text-4xl font-extrabold leading-tight sm:text-5xl">{t.hero.title}</h1>
           <p className="text-lg text-muted">{t.hero.subtitle}</p>
-          <HeroActions primary={t.hero.cta} secondary={t.hero.secondary} />
+          <HeroActions
+            primary={t.hero.cta}
+            secondary={t.hero.secondary}
+            primaryHref={`/${locale}/register`}
+          />
         </div>
         <div className="flex flex-col items-center gap-4">
           <Cemo className="w-56 sm:w-72" />
