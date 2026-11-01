@@ -1,7 +1,7 @@
 ﻿import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/proxy";
 
-const protectedPattern = /^\/(fr|ar)\/account(?:\/|$)/;
+const protectedPattern = /^\/(fr|ar)\/(?:account|admin)(?:\/|$)/;
 
 export async function proxy(request: NextRequest) {
   const { response, user } = await updateSession(request);
