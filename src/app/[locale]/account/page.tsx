@@ -1,5 +1,4 @@
-﻿Set-Content -LiteralPath "src\app\[locale]\account\page.tsx" -Encoding UTF8 -Value @'
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/actions/auth";
 import { authCopy } from "@/lib/auth/copy";
@@ -15,13 +14,13 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, first_name, last_name")
+    .select("role, first_name, last_name, locale")
     .eq("id", user.id)
     .single();
 
   const { data: student } = await supabase
     .from("student_profiles")
-    .select("grade_level, is_bem_candidate, total_xp")
+    .select("grade_level, is_bem_candidate, current_streak_days, total_xp")
     .eq("profile_id", user.id)
     .maybeSingle();
 
@@ -51,4 +50,3 @@ export default async function AccountPage({ params }: { params: Promise<{ locale
     </main>
   );
 }
-'@

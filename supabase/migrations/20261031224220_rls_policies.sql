@@ -2,7 +2,6 @@
 -- SMARTCEM - PHASE 4 : politiques RLS par role
 -- ============================================================
 
--- Fonctions auxiliaires SECURITY DEFINER (contournent le RLS en lecture)
 CREATE OR REPLACE FUNCTION public.auth_role()
 RETURNS public.user_role
 LANGUAGE sql SECURITY DEFINER STABLE SET search_path = ''
@@ -70,9 +69,7 @@ AS $$
       OR public.is_teacher_of(target_id);
 $$;
 
--- ============================================================
--- profiles
--- ============================================================
+-- ============ profiles ============
 DROP POLICY IF EXISTS profiles_select_own ON public.profiles;
 DROP POLICY IF EXISTS profiles_select_children ON public.profiles;
 DROP POLICY IF EXISTS profiles_select_class ON public.profiles;
@@ -91,13 +88,11 @@ CREATE POLICY profiles_update_own ON public.profiles
   FOR UPDATE TO authenticated
   USING (id = auth.uid()) WITH CHECK (id = auth.uid());
 
--- Le role ne doit JAMAIS etre modifiable par l'utilisateur
+-- Le role ne doit JAMAIS etre modifiable par l'utilisateur (anti-escalade)
 REVOKE UPDATE ON public.profiles FROM authenticated;
 GRANT UPDATE (first_name, last_name, avatar_url, locale) ON public.profiles TO authenticated;
 
--- ============================================================
--- student_profiles
--- ============================================================
+-- ============ student_profiles ============
 DROP POLICY IF EXISTS sp_select_own ON public.student_profiles;
 DROP POLICY IF EXISTS sp_select_children ON public.student_profiles;
 DROP POLICY IF EXISTS sp_select_class ON public.student_profiles;
@@ -111,12 +106,10 @@ CREATE POLICY sp_select_children ON public.student_profiles
 CREATE POLICY sp_select_class ON public.student_profiles
   FOR SELECT TO authenticated USING (public.is_teacher_of(profile_id));
 
--- XP et serie sont geres par le serveur uniquement (anti-triche)
+-- XP, serie, niveau : reserves au serveur (anti-triche)
 REVOKE UPDATE ON public.student_profiles FROM authenticated;
 
--- ============================================================
--- parent_child_links
--- ============================================================
+-- ============ parent_child_links ============
 DROP POLICY IF EXISTS pcl_select_own ON public.parent_child_links;
 DROP POLICY IF EXISTS pcl_insert_request ON public.parent_child_links;
 DROP POLICY IF EXISTS pcl_delete_own ON public.parent_child_links;
@@ -133,9 +126,7 @@ CREATE POLICY pcl_delete_own ON public.parent_child_links
   FOR DELETE TO authenticated
   USING (parent_id = auth.uid());
 
--- ============================================================
--- classes et class_enrollments (via fonctions anti-recursion)
--- ============================================================
+-- ============ classes / enrollments (fonctions anti-recursion) ============
 DROP POLICY IF EXISTS classes_select_own ON public.classes;
 DROP POLICY IF EXISTS classes_select_enrolled ON public.classes;
 DROP POLICY IF EXISTS classes_crud_own ON public.classes;
@@ -162,18 +153,15 @@ CREATE POLICY ce_crud ON public.class_enrollments
   USING (public.teaches_class(class_id))
   WITH CHECK (public.teaches_class(class_id));
 
--- ============================================================
--- teacher_profiles
--- ============================================================
+-- ============ teacher_profiles ============
 DROP POLICY IF EXISTS tp_select_own ON public.teacher_profiles;
 
 CREATE POLICY tp_select_own ON public.teacher_profiles
   FOR SELECT TO authenticated USING (profile_id = auth.uid());
 
--- ============================================================
--- Referentiel pedagogique : lecture pour tous les connectes
--- ============================================================
-DO $$
+-- ============ Referentiel : lecture pour les connectes ============
+DO $block$
+DECLARE t text;
 BEGIN
   FOR t IN
     SELECT unnest(ARRAY[
@@ -187,11 +175,10 @@ BEGIN
       'CREATE POLICY %I_select_all ON public.%I FOR SELECT TO authenticated USING (true)',
       t, t);
   END LOOP;
-END $$;
+END
+$block$;
 
--- ============================================================
--- Submissions, answers, error_logs, knowledge states
--- ============================================================
+-- ============ Submissions / answers / errors / BKT ============
 DROP POLICY IF EXISTS submissions_select ON public.submissions;
 DROP POLICY IF EXISTS submissions_insert ON public.submissions;
 DROP POLICY IF EXISTS submissions_update ON public.submissions;
@@ -237,9 +224,7 @@ DROP POLICY IF EXISTS sks_select ON public.student_knowledge_states;
 CREATE POLICY sks_select ON public.student_knowledge_states
   FOR SELECT TO authenticated USING (public.has_student_access(student_id));
 
--- ============================================================
--- OCR et corrections IA (lecture)
--- ============================================================
+-- ============ OCR / corrections IA ============
 DROP POLICY IF EXISTS ocr_select ON public.ocr_transcriptions;
 DROP POLICY IF EXISTS ocr_insert ON public.ocr_transcriptions;
 
@@ -264,9 +249,7 @@ DROP POLICY IF EXISTS ai_corr_select ON public.ai_corrections;
 CREATE POLICY ai_corr_select ON public.ai_corrections
   FOR SELECT TO authenticated USING (public.has_student_access(student_id));
 
--- ============================================================
--- Remediation et repetition espacee
--- ============================================================
+-- ============ Remediation / repetition espacee ============
 DROP POLICY IF EXISTS remed_select ON public.remediation_assignments;
 DROP POLICY IF EXISTS remed_update ON public.remediation_assignments;
 
@@ -283,9 +266,7 @@ CREATE POLICY sr_select ON public.spaced_repetition_reviews
   FOR SELECT TO authenticated
   USING (student_id = auth.uid() OR public.is_parent_of(student_id));
 
--- ============================================================
--- BEM
--- ============================================================
+-- ============ BEM ============
 DROP POLICY IF EXISTS bem_sessions_select ON public.bem_sessions;
 DROP POLICY IF EXISTS bem_sessions_insert ON public.bem_sessions;
 DROP POLICY IF EXISTS bem_sessions_update ON public.bem_sessions;
@@ -322,9 +303,7 @@ DROP POLICY IF EXISTS bem_readiness_select ON public.bem_readiness_estimates;
 CREATE POLICY bem_readiness_select ON public.bem_readiness_estimates
   FOR SELECT TO authenticated USING (public.has_student_access(student_id));
 
--- ============================================================
--- Notifications, abonnements, quotas
--- ============================================================
+-- ============ Notifications / abonnements / quotas ============
 DROP POLICY IF EXISTS notif_select ON public.notifications;
 DROP POLICY IF EXISTS notif_update ON public.notifications;
 
@@ -346,4 +325,4 @@ DROP POLICY IF EXISTS quotas_select ON public.ai_quotas;
 CREATE POLICY quotas_select ON public.ai_quotas
   FOR SELECT TO authenticated USING (profile_id = auth.uid());
 
--- ai_audit_logs, audit_logs, content_versions restent deny-all (service_role seul)
+-- ai_audit_logs, audit_logs, content_versions : deny-all (service_role seul)
